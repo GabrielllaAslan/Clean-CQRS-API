@@ -9,9 +9,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Database
 {
-    public class RealDatabase :DbContext
+    public class RealDatabase : DbContext
     {
-        public RealDatabase() { }
+        public RealDatabase()
+        {
+
+        }
 
         public RealDatabase(DbContextOptions<RealDatabase> options) : base(options)
         {
