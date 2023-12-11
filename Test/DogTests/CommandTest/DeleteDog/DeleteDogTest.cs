@@ -21,7 +21,7 @@ namespace Test.DogTests.CommandTest.DeleteDog
         public async Task IfIdIsOkThendeleteDog()
         {
             // Arrange
-            Guid dogToDeleteId = new Guid("12345678-1234-5678-1234-567812345678");
+            Guid dogToDeleteId = new Guid("12345678-1234-5678-1234-567812345679");
 
             var deleteDogCommand = new DeleteDogByIdCommand(dogToDeleteId);
             // Act
