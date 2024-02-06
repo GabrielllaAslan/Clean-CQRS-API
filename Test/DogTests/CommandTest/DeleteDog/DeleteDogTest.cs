@@ -1,5 +1,4 @@
-﻿using Application.Commands.Dogs.Deletedog.Application.Commands.Dogs.DeleteDog;
-using Application.Commands.Dogs.DeleteDog;
+﻿using Application.Commands.Dogs.DeleteDog;
 using Infrastructure.Database;
 
 namespace Test.DogTests.CommandTest.DeleteDog
