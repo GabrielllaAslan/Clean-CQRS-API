@@ -30,6 +30,8 @@ namespace Test.CatTests.CommandTest
 
             dto.Name = catName;
 
+            dto.LikesToPlay = false;
+
             var command = new UpdateCatByIdCommand(dto, catId);
 
             //Act
