@@ -1,6 +1,5 @@
 ﻿using Application.Commands.Dogs.DeleteDog;
 using Infrastructure.Database;
-using System.Reflection.Metadata;
 
 namespace Test.DogTests.CommandTest.DeleteDog
 {
