@@ -1,4 +1,5 @@
 ﻿using Application.Commands.Cats.AddCat;
+using Application.Commands.Cats.DeleteCat;
 using Application.Commands.Cats.UpdateCat;
 using Application.Dtos;
 using Application.Queries.Cats.GetAll;
@@ -50,5 +51,14 @@ namespace API.Controllers.CatsController
             return Ok(await _mediator.Send(new AddCatCommand(newCat)));
         }
 
+        //Delete cat
+        [HttpDelete]
+        [Route("deleteCat/{deleteCatId}")]
+        public async Task<IActionResult> DeleteCat(Guid deleteCatId)
+        {
+            await _mediator.Send(new DeleteCatByIdCommand(deleteCatId));
+
+            return NoContent();
+        }
     }
 }
