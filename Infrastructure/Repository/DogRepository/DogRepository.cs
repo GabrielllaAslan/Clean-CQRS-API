@@ -2,7 +2,7 @@
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories.Dogs
+namespace Infrastructure.Repository.DogRepository
 {
     public class DogRepository : IDogRepository
     {
