@@ -1,8 +1,8 @@
-﻿using Application.Dtos;
-using Application.Queries.Cats.GetAll;
-using Application.Queries.Cats.GetById;
+﻿using Application.Commands.Cats.AddCat;
 using Application.Commands.Cats.UpdateCat;
 using Application.Dtos;
+using Application.Queries.Cats.GetAll;
+using Application.Queries.Cats.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,11 +34,21 @@ namespace API.Controllers.CatsController
             return Ok(await _mediator.Send(new GetCatByIdQuery(catId)));
         }
 
+        //Update cat by Id
         [HttpPut]
         [Route("updateCat/{updateCatId}")]
         public async Task<IActionResult> UpdateCatById([FromBody] CatDto catToUpdate, Guid updateCatId)
         {
             return Ok(await _mediator.Send(new UpdateCatByIdCommand(catToUpdate, updateCatId)));
         }
+
+        //Add new cat
+        [HttpPost]
+        [Route("addNewCat")]
+        public async Task<IActionResult> AddCat([FromBody] CatDto newCat)
+        {
+            return Ok(await _mediator.Send(new AddCatCommand(newCat)));
+        }
+
     }
 }

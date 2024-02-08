@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 
-namespace Infrastructure.Repositories.Dogs
+namespace Infrastructure.Repository.DogRepository
 {
     public interface IDogRepository
     {

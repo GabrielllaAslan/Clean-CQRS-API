@@ -1,7 +1,7 @@
 ﻿using Application.Validators.Dog;
 using Domain.Models;
 using Infrastructure.Database;
-using Infrastructure.Repositories.Dogs;
+using Infrastructure.Repository.DogRepository;
 using MediatR;
 
 namespace Application.Commands.Dogs.DeleteDog

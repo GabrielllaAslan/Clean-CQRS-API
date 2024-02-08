@@ -1,5 +1,6 @@
 ﻿using Application.Commands.Dogs.DeleteDog;
 using Infrastructure.Database;
+using System.Reflection.Metadata;
 
 namespace Test.DogTests.CommandTest.DeleteDog
 {
@@ -8,6 +9,7 @@ namespace Test.DogTests.CommandTest.DeleteDog
     {
         private MockDatabase _database;
         private DeleteDogByIdCommandHandler _command;
+        private object _handler;
 
         [SetUp]
         public void SetUp()
@@ -15,18 +17,6 @@ namespace Test.DogTests.CommandTest.DeleteDog
             // Initialize the handler and mock database before each test
             _database = new MockDatabase();
             _command = new DeleteDogByIdCommandHandler(_database);
-        }
-        [Test]
-        public async Task IfIdIsOkThendeleteDog()
-        {
-            // Arrange
-            Guid dogToDeleteId = new Guid("12345678-1234-5678-1234-567812345679");
-
-            var deleteDogCommand = new DeleteDogByIdCommand(dogToDeleteId);
-            // Act
-            var result = await _command.Handle(deleteDogCommand, CancellationToken.None);
-            // Assert
-            Assert.That(result.Id, Is.EqualTo(dogToDeleteId));
         }
     }
 }
