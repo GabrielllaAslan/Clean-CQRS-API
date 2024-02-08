@@ -16,10 +16,9 @@ namespace Infrastructure.Database
         }
 
         public DbSet<Dog> Dogs { get; set; }
-        /*
         public DbSet<Cat> Cats { get; set; }
         public DbSet<Bird> Birds { get; set; }
-        */
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
