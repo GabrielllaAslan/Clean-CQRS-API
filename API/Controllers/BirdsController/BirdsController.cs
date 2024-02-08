@@ -30,7 +30,14 @@ namespace API.Controllers.BirdsController
         [Route("getBirdById/{birdId}")]
         public async Task<IActionResult> GetBirdById(Guid birdId)
         {
-            return Ok(await _mediator.Send(new GetBirdByIdQuery(birdId)));
+            var bird = await _mediator.Send(new GetBirdByIdQuery(birdId));
+
+            if (bird == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(bird);
         }
 
         //Update bird by Id
