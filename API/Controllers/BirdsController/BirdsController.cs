@@ -47,7 +47,13 @@ namespace API.Controllers.BirdsController
         [Route("updateBird/{updateBirdId}")]
         public async Task<IActionResult> UpdateBirdById([FromBody] BirdDto birdToUpdate, Guid updateBirdId)
         {
-            return Ok(await _mediator.Send(new UpdateBirdByIdCommand(birdToUpdate, updateBirdId)));
+            var bird = await _mediator.Send(new GetBirdByIdQuery(updateBirdId));
+
+            if (bird != null)
+            {
+                return Ok(await _mediator.Send(new UpdateBirdByIdCommand(birdToUpdate, updateBirdId)));
+            }
+            return NotFound();
         }
 
         //Add bird
@@ -55,6 +61,11 @@ namespace API.Controllers.BirdsController
         [Route("addNewBird")]
         public async Task<IActionResult> AddBird([FromBody] BirdDto newBird)
         {
+            if (newBird.Name == string.Empty)
+            {
+                return BadRequest();
+            }
+
             return Ok(await _mediator.Send(new AddBirdCommand(newBird)));
         }
 
@@ -63,7 +74,12 @@ namespace API.Controllers.BirdsController
         [Route("deleteBird/{deleteBirdId}")]
         public async Task<IActionResult> DeleteBird(Guid deleteBirdId)
         {
-            await _mediator.Send(new DeleteBirdByIdCommand(deleteBirdId));
+            var bird = await _mediator.Send(new GetBirdByIdQuery(deleteBirdId));
+
+            if (bird != null)
+            {
+                await _mediator.Send(new DeleteBirdByIdCommand(deleteBirdId));
+            }
 
             return NoContent();
         }
