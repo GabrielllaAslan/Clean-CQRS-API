@@ -4,6 +4,7 @@ using Application.Commands.Dogs.UpdateDog;
 using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
 using Application.Queries.Dogs.GetById;
+using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +36,14 @@ namespace API.Controllers.DogsController
         [Route("getDogById/{dogId}")]
         public async Task<IActionResult> GetDogById(Guid dogId)
         {
-            return Ok(await _mediator.Send(new GetDogByIdQuery(dogId)));
+            var dog = await _mediator.Send(new GetDogByIdQuery(dogId));
+
+            if (dog == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(dog);
         }
 
         // Create a new dog 
@@ -43,22 +51,39 @@ namespace API.Controllers.DogsController
         [Route("addNewDog")]
         public async Task<IActionResult> AddDog([FromBody] DogDto newDog)
         {
+            if (newDog.Name == string.Empty)
+            {
+                return BadRequest();
+            }
+
             return Ok(await _mediator.Send(new AddDogCommand(newDog)));
         }
 
         // Update a specific dog
         [HttpPut]
-        [Route("updateDog/{updatedDogId}")]
-        public async Task<IActionResult> UpdateDog([FromBody] DogDto updatedDog, Guid updatedDogId)
+        [Route("updateDog/{updateDogId}")]
+        public async Task<IActionResult> UpdateDog([FromBody] DogDto dogToUpdate, Guid updateDogId)
         {
-            return Ok(await _mediator.Send(new UpdateDogByIdCommand(updatedDog, updatedDogId)));
+            var dog = await _mediator.Send(new GetDogByIdQuery(updateDogId));
+
+            if (dog != null)
+            {
+                return Ok(await _mediator.Send(new UpdateDogByIdCommand(dogToUpdate, updateDogId)));
+            }
+
+            return NotFound();
         }
 
         [HttpDelete]
         [Route("deleteDog/{deleteDogId}")]
         public async Task<IActionResult> DeleteDog(Guid deleteDogId)
         {
-            await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
+            var dog = await _mediator.Send(new GetDogByIdQuery(deleteDogId));
+
+            if (dog != null)
+            {
+                await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
+            }
 
             return NoContent();
         }
