@@ -13,6 +13,7 @@ namespace Infrastructure
             {
                 option.UseSqlServer("Server=LAPTOP-O7CREI7D; Database=claen-api-database; Trusted_Connection=True; TrustServerCertificate=True");
             });
+
             return services;
         }
     }

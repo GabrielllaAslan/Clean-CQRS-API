@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Repository\BirdRepository\" />
     <Folder Include="Repository\CatRepository\" />
   </ItemGroup>
 

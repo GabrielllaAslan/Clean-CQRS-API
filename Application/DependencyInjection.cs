@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Queries.Users.Login.Helpers;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
@@ -9,6 +10,8 @@ namespace Application
         {
             var assembly = typeof(DependencyInjection).Assembly;
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
+
+            services.AddScoped<TokenHelper>();
 
             services.AddValidatorsFromAssembly(assembly);
 
