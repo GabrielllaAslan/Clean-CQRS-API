@@ -49,5 +49,21 @@ namespace Infrastructure.Database
             new Bird { Id = new Guid("12345678-1234-5678-1234-567812345603"), Name = "TestBirdForUnitTests", CanFly = true },
             new Bird { Id = new Guid("12345678-1234-5678-1234-567812345604"), Name = "AnotherTestBirdForUnitTests", CanFly = false }
         };
+
+        public List<User> Users
+        {
+            get { return allUsers; }
+            set { allUsers = value; }
+        }
+
+        private static List<User> allUsers = new()
+        {
+            new User { Id = Guid.NewGuid(), UserName = "Gabbi"},
+            new User { Id = Guid.NewGuid(), UserName = "Gabbe"},
+            new User { Id = Guid.NewGuid(), UserName = "Lina"},
+            new User { Id = new Guid("12345678-1234-5678-1234-5678123465478"), UserName = "TestUserForUnitTests"}
+
+        };
+
     }
 }

@@ -1,41 +1,42 @@
-﻿using Application.Commands.Birds.AddBird;
-using Application.Dtos;
+﻿using Domain.Models;
 using Infrastructure.Database;
 
-namespace Test.BirdTests.CommandTest
+namespace Application.Commands.Birds.AddBird.Tests
 {
     [TestFixture]
-    public class AddBirdTests
+    public class AddBirdCommandHandlerTests
     {
+        private Mock<MockDatabase> _mockDatabase;
         private AddBirdCommandHandler _handler;
-        private MockDatabase _mockDatabase;
 
         [SetUp]
-        public void SetUp()
+        public void Setup()
         {
-            _mockDatabase = new MockDatabase();
-            _handler = new AddBirdCommandHandler(_mockDatabase);
+            _mockDatabase = new Mock<MockDatabase>();
+            _handler = new AddBirdCommandHandler(_mockDatabase.Object);
         }
 
         [Test]
-        public async Task Handle_Add_Bird_To_MockDatabase()
+        public async Task Handle_ValidCommand_AddsBirdToDatabase()
         {
-            //Arrange
-            var birdName = "Tage";
+            // Arrange
+            var command = new AddBirdCommand
+            {
+                NewBird = new Bird
+                {
+                    Name = "Eagle",
+                    CanFly = true
+                }
+            };
 
-            var dto = new BirdDto();
-
-            dto.Name = birdName;
-
-            dto.CanFly = false;
-
-            var command = new AddBirdCommand(dto);
-
-            //Act 
+            // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
-            //Assert
-            Assert.IsNotNull(result);
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(command.NewBird.Name, result.Name);
+            Assert.AreEqual(command.NewBird.CanFly, result.CanFly);
+            _mockDatabase.Verify(db => db.Birds.Add(It.IsAny<Bird>()), Times.Once);
         }
     }
 }
