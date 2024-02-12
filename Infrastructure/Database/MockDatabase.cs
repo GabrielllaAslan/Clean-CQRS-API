@@ -61,7 +61,7 @@ namespace Infrastructure.Database
             new User { Id = Guid.NewGuid(), UserName = "Gabbi"},
             new User { Id = Guid.NewGuid(), UserName = "Gabbe"},
             new User { Id = Guid.NewGuid(), UserName = "Lina"},
-            new User { Id = new Guid("12345678-1234-5678-1234-5678123465478"), UserName = "TestUserForUnitTests"}
+            new User { Id = new Guid("550e8400-e29b-41d4-a716-446655440000"), UserName = "TestUserForUnitTests"}
 
         };
 
