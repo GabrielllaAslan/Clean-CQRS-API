@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.DogRepository
     public class DogRepository : IDogRepository
     {
         private readonly RealDatabase _realDatabase;
-        //Implement ILogger
+
 
         public DogRepository(RealDatabase realDatabase)
         {
@@ -26,6 +26,11 @@ namespace Infrastructure.Repository.DogRepository
             {
                 throw new ArgumentException(ex.Message);
             }
+        }
+
+        public Task<Dog> AddDog(Dog newDog, Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Dog> DeleteDogById(Guid id)
@@ -75,6 +80,12 @@ namespace Infrastructure.Repository.DogRepository
             {
                 throw new Exception($"An error occured while getting a dog by Id {dogId} from database", ex);
             }
+        }
+
+        public Task<List<Dog>> GetDogsByWeightBreed(int? weight, string? breed)
+
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Dog> UpdateDog(Dog updatedDog)

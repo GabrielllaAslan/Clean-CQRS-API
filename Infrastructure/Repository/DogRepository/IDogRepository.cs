@@ -6,8 +6,9 @@ namespace Infrastructure.Repository.DogRepository
     {
         Task<List<Dog>> GetAllDogsAsync();
         Task<Dog> GetDogById(Guid id);
-        Task<Dog> AddDog(Dog newDog);
+        Task<Dog> AddDog(Dog newDog, Guid id);
         Task<Dog> UpdateDog(Dog newDog);
         Task<Dog> DeleteDogById(Guid id);
+        Task<List<Dog>> GetDogsByWeightBreed(int? weight, string? breed);
     }
 }

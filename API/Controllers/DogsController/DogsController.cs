@@ -4,8 +4,10 @@ using Application.Commands.Dogs.UpdateDog;
 using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
 using Application.Queries.Dogs.GetById;
+using Application.Queries.Dogs.GetWeightAndBreed;
+using Application.Validators;
+using Application.Validators.Dog;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,9 +19,13 @@ namespace API.Controllers.DogsController
     public class DogsController : ControllerBase
     {
         internal readonly IMediator _mediator;
-        public DogsController(IMediator mediator)
+        internal readonly DogValidator _dogValidator;
+        internal readonly GuidValidator _guidValidator;
+        public DogsController(IMediator mediator, DogValidator dogValidator, GuidValidator guidValidator)
         {
             _mediator = mediator;
+            _dogValidator = dogValidator;
+            _guidValidator = guidValidator;
         }
 
         // Get all dogs from database
@@ -27,8 +33,15 @@ namespace API.Controllers.DogsController
         [Route("getAllDogs")]
         public async Task<IActionResult> GetAllDogs()
         {
-            return Ok(await _mediator.Send(new GetAllDogsQuery()));
-            //return Ok("GET ALL DOGS");
+            try
+            {
+                return Ok(await _mediator.Send(new GetAllDogsQuery()));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         // Get a dog by Id
@@ -36,6 +49,13 @@ namespace API.Controllers.DogsController
         [Route("getDogById/{dogId}")]
         public async Task<IActionResult> GetDogById(Guid dogId)
         {
+            var guidValidator = _guidValidator.Validate(dogId);
+
+            if (!guidValidator.IsValid)
+            {
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
             var dog = await _mediator.Send(new GetDogByIdQuery(dogId));
 
             if (dog == null)
@@ -43,55 +63,109 @@ namespace API.Controllers.DogsController
                 return NotFound();
             }
 
-            return Ok(dog);
+            try
+            {
+                return Ok(dog);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
+        [HttpGet]
+        [Route("getDogsByWeightOrBreed")]
+        public async Task<IActionResult> GetAllDogsByWeight(int? weight, string? breed)
+        {
+            return Ok(await _mediator.Send(new GetDogsByWeightOrBreedQuery { Weight = weight, Breed = breed }));
+        }
+
+
         // Create a new dog 
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         [Route("addNewDog")]
-        public async Task<IActionResult> AddDog([FromBody] DogDto newDog)
+        [ProducesResponseType(typeof(DogDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddDog([FromBody] DogDto newDog, Guid userId)
         {
-            if (newDog.Name == string.Empty)
+            var dogValidator = _dogValidator.Validate(newDog);
+
+            if (!dogValidator.IsValid)
             {
-                return BadRequest();
+                return BadRequest(dogValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
-            return Ok(await _mediator.Send(new AddDogCommand(newDog)));
+            try
+            {
+                return Ok(await _mediator.Send(new AddDogCommand(newDog, userId)));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         // Update a specific dog
-        [Authorize]
+        //[Authorize]
         [HttpPut]
         [Route("updateDog/{updateDogId}")]
         public async Task<IActionResult> UpdateDog([FromBody] DogDto dogToUpdate, Guid updateDogId)
         {
-            var dog = await _mediator.Send(new GetDogByIdQuery(updateDogId));
+            var dogValidator = _dogValidator.Validate(dogToUpdate);
 
-            if (dog != null)
+            var guidValidator = _guidValidator.Validate(updateDogId);
+
+            if (!guidValidator.IsValid)
             {
-                return Ok(await _mediator.Send(new UpdateDogByIdCommand(dogToUpdate, updateDogId)));
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
-            return NotFound();
+            if (!dogValidator.IsValid)
+            {
+                return BadRequest(dogValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
+            try
+            {
+                var dog = await _mediator.Send(new UpdateDogByIdCommand(dogToUpdate, updateDogId));
+
+                if (dog == null)
+                {
+                    return NotFound($"Dog with Id:{updateDogId} does not exist in database");
+                }
+                return Ok(dog);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
-        //Delete dog by Id
-        [Authorize]
+        // Delete a specific dog
+        //[Authorize]
         [HttpDelete]
         [Route("deleteDog/{deleteDogId}")]
         public async Task<IActionResult> DeleteDog(Guid deleteDogId)
         {
-            var dog = await _mediator.Send(new GetDogByIdQuery(deleteDogId));
+            var guidValidator = _guidValidator.Validate(deleteDogId);
 
-            if (dog != null)
+            if (!guidValidator.IsValid)
+            {
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
+            try
             {
                 await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
             }
 
             return NoContent();
         }
-
-
     }
 }
