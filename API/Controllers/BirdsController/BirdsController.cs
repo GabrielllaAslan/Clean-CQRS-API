@@ -4,10 +4,14 @@ using Application.Commands.Birds.UpdateBird;
 using Application.Dtos;
 using Application.Queries.Birds.GetAll;
 using Application.Queries.Birds.GetById;
+using Application.Queries.Birds.GetColor;
+using Application.Validators;
+using Application.Validators.Bird;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 namespace API.Controllers.BirdsController
 {
     [Route("api/[controller]")]
@@ -15,9 +19,14 @@ namespace API.Controllers.BirdsController
     public class BirdsController : ControllerBase
     {
         internal readonly IMediator _mediator;
-        public BirdsController(IMediator mediator)
+        internal readonly BirdValidator _birdValidator;
+        internal readonly GuidValidator _guidValidator;
+
+        public BirdsController(IMediator mediator, BirdValidator birdValidator, GuidValidator guidValidator)
         {
             _mediator = mediator;
+            _birdValidator = birdValidator;
+            _guidValidator = guidValidator;
         }
 
         // GET: api/<BirdsController>
@@ -28,11 +37,17 @@ namespace API.Controllers.BirdsController
             return Ok(await _mediator.Send(new GetAllBirdsQuery()));
         }
 
-        // Get bird by Id
         [HttpGet]
         [Route("getBirdById/{birdId}")]
         public async Task<IActionResult> GetBirdById(Guid birdId)
         {
+            var guidValidator = _guidValidator.Validate(birdId);
+
+            if (!guidValidator.IsValid)
+            {
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
             var bird = await _mediator.Send(new GetBirdByIdQuery(birdId));
 
             if (bird == null)
@@ -40,49 +55,103 @@ namespace API.Controllers.BirdsController
                 return NotFound();
             }
 
-            return Ok(bird);
+            try
+            {
+                return Ok(bird);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
-        //Update bird by Id
-        [Authorize]
+        [HttpGet]
+        [Route("getAllBirdsWithColor/{birdColor}")]
+        public async Task<IActionResult> GetBirdByColor(string birdColor)
+        {
+            return Ok(await _mediator.Send(new GetAllBirdsWithColorQuery { Color = birdColor }));
+        }
+
+        //[Authorize]
+        [HttpPost]
+        [Route("addNewBird")]
+        public async Task<IActionResult> AddBird([FromBody] BirdDto newBird, Guid userId)
+        {
+            var birdValidator = _birdValidator.Validate(newBird);
+
+            if (!birdValidator.IsValid)
+            {
+                return BadRequest(birdValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
+            try
+            {
+                return Ok(await _mediator.Send(new AddBirdCommand(newBird, userId)));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        //[Authorize]
         [HttpPut]
         [Route("updateBird/{updateBirdId}")]
         public async Task<IActionResult> UpdateBirdById([FromBody] BirdDto birdToUpdate, Guid updateBirdId)
         {
-            var bird = await _mediator.Send(new GetBirdByIdQuery(updateBirdId));
+            var guidValidator = _guidValidator.Validate(updateBirdId);
 
-            if (bird != null)
+            if (!guidValidator.IsValid)
             {
-                return Ok(await _mediator.Send(new UpdateBirdByIdCommand(birdToUpdate, updateBirdId)));
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
-            return NotFound();
-        }
+            var birdValidator = _birdValidator.Validate(birdToUpdate);
 
-        //Add bird
-        [Authorize]
-        [HttpPost]
-        [Route("addNewBird")]
-        public async Task<IActionResult> AddBird([FromBody] BirdDto newBird)
-        {
-            if (newBird.Name == string.Empty)
+            if (!birdValidator.IsValid)
             {
-                return BadRequest();
+                return BadRequest(birdValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
-            return Ok(await _mediator.Send(new AddBirdCommand(newBird)));
+            var bird = await _mediator.Send(new UpdateBirdByIdCommand(birdToUpdate, updateBirdId));
+
+            if (bird == null)
+            {
+                return NotFound($"Bird with Id: {updateBirdId} does not exist in database");
+            }
+
+            try
+            {
+                return Ok(bird);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
-        //Delete bird by Id
-        [Authorize]
+        //[Authorize]
         [HttpDelete]
         [Route("deleteBird/{deleteBirdId}")]
         public async Task<IActionResult> DeleteBird(Guid deleteBirdId)
         {
-            var bird = await _mediator.Send(new GetBirdByIdQuery(deleteBirdId));
+            var guidValidator = _guidValidator.Validate(deleteBirdId);
 
-            if (bird != null)
+            if (!guidValidator.IsValid)
+            {
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
+            try
             {
                 await _mediator.Send(new DeleteBirdByIdCommand(deleteBirdId));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
             }
 
             return NoContent();
