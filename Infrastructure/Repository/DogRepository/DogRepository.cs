@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.DogRepository
     public class DogRepository : IDogRepository
     {
         private readonly RealDatabase _realDatabase;
-     
+
 
         public DogRepository(RealDatabase realDatabase)
         {
