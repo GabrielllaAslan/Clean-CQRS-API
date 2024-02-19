@@ -12,11 +12,11 @@ namespace Infrastructure.Database
 
         private static List<Dog> allDogs = new()
         {
-            new Dog { Id = Guid.NewGuid(), Name = "Milo", },
-            new Dog { Id = Guid.NewGuid(), Name = "Mila", },
-            new Dog { Id = Guid.NewGuid(), Name = "Molly", },
-            new Dog { Id = new Guid("12345678-1234-5678-1234-567812345678") },
-            new Dog { Id = new Guid("12345678-1234-5678-1234-567812345679") }
+            new Dog { Id = Guid.NewGuid(), Name = "Milo", Breed = "Labrador Retriever", Weight = 25},
+            new Dog { Id = Guid.NewGuid(), Name = "Mila", Breed = "Golden Retriever", Weight = 22},
+            new Dog { Id = Guid.NewGuid(), Name = "Molly", Breed = "German Shepherd", Weight = 30},
+          /*new Dog { Id = new Guid("12345678-1234-5678-1234-567812345678") },
+            new Dog { Id = new Guid("12345678-1234-5678-1234-567812345679") }*/
         };
 
         public List<Cat> Cats
@@ -27,9 +27,9 @@ namespace Infrastructure.Database
 
         private static List<Cat> allCats = new()
         {
-            new Cat { Id = Guid.NewGuid(), Name = "Kolle", },
-            new Cat { Id = Guid.NewGuid(), Name = "Pelle", },
-            new Cat { Id = Guid.NewGuid(), Name = "Mille", },
+            new Cat { Id = Guid.NewGuid(), Name = "Kolle", Breed = "Persian", Weight = 3},
+            new Cat { Id = Guid.NewGuid(), Name = "Pelle", Breed = "Siamese", Weight = 4},
+            new Cat { Id = Guid.NewGuid(), Name = "Mille", Breed = "Maine Coon", Weight = 5},
             new Cat { Id = new Guid("12345678-1234-5678-1234-567812345601"), },
             new Cat { Id = new Guid("12345678-1234-5678-1234-567812345602"), }
         };
@@ -42,12 +42,13 @@ namespace Infrastructure.Database
 
         private static List<Bird> allBirds = new()
         {
-            new Bird { Id = Guid.NewGuid(), Name = "Lilly", CanFly = true, },
-            new Bird { Id = Guid.NewGuid(), Name = "Ciccy", CanFly = true, },
-            new Bird { Id = Guid.NewGuid(), Name = "Illy", CanFly = false, },
-            new Bird { Id = Guid.NewGuid(), Name = "Sally", CanFly = true, },
-            new Bird { Id = new Guid("12345678-1234-5678-1234-567812345603"), Name = "TestBirdForUnitTests", CanFly = true, },
-            new Bird { Id = new Guid("12345678-1234-5678-1234-567812345604"), Name = "AnotherTestBirdForUnitTests", CanFly = false, }
+           new Bird { Id = Guid.NewGuid(), Name = "Lilly", CanFly = true, Color = "Blue" },
+           new Bird { Id = Guid.NewGuid(), Name = "Ciccy", CanFly = true, Color = "Green" },
+           new Bird { Id = Guid.NewGuid(), Name = "Illy", CanFly = false, Color = "Red" },
+           new Bird { Id = Guid.NewGuid(), Name = "Sally", CanFly = true, Color = "Yellow" },
+           new Bird { Id = new Guid("12345678-1234-5678-1234-567812345603"), Name = "TestBirdForUnitTests", CanFly = true, Color = "Orange" },
+           new Bird { Id = new Guid("12345678-1234-5678-1234-567812345604"), Name = "AnotherTestBirdForUnitTests", CanFly = false, Color = "Purple" }
+            
         };
 
         public List<User> Users

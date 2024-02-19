@@ -10,12 +10,7 @@ namespace Application.Commands.Dogs.DeleteDog
     {
         private readonly IDogRepository _dogRepository;
         private readonly DogValidator _dogValidator;
-        private MockDatabase database;
-
-        public DeleteDogByIdCommandHandler(MockDatabase database)
-        {
-            this.database = database;
-        }
+        
 
         public DeleteDogByIdCommandHandler(IDogRepository dogRepository, DogValidator validator)
         {

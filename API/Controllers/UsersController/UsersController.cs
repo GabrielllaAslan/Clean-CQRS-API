@@ -1,4 +1,5 @@
-﻿using Application.Commands.Users;
+﻿using Application.Commands.AnimalToUser;
+using Application.Commands.Users;
 using Application.Dtos;
 using Application.Queries.Users.GetAllUsers;
 using Application.Queries.Users.Login;
@@ -25,15 +26,29 @@ namespace API.Controllers.UsersController
 
         }
 
-        [HttpPost]
-        [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] UserDto newUser)
+        [HttpPost("addNewAnimal")]
+        public async Task<IActionResult> AddNewAnimal([FromBody] AddNewAnimalCommand command)
         {
-            return Ok(await _mediator.Send(new AddNewUserCommand(newUser)));
-
+            try
+            {
+                var result = await _mediator.Send(command);
+                if (result)
+                {
+                    return Ok("Animal added successfully");
+                }
+                else
+                {
+                    return BadRequest("Failed to add animal");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "Internal server error");
+            }
         }
 
-        [HttpPost]
+            [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] UserDto userWantingToLogIn)
         {
@@ -44,3 +59,4 @@ namespace API.Controllers.UsersController
     }
 
 }
+

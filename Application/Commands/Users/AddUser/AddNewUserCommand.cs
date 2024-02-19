@@ -2,7 +2,7 @@
 using Domain.Models;
 using MediatR;
 
-namespace Application.Commands.Users
+namespace Application.Commands.Users.AddUser
 {
     public class AddNewUserCommand : IRequest<User>
     {

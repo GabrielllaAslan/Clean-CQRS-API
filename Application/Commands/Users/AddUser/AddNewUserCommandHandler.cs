@@ -2,7 +2,7 @@
 using Infrastructure.Database;
 using MediatR;
 
-namespace Application.Commands.Users
+namespace Application.Commands.Users.AddUser
 {
     internal sealed class AddNewUserCommandHandler : IRequestHandler<AddNewUserCommand, User>
     {

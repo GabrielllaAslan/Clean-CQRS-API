@@ -24,7 +24,7 @@ namespace Application.Commands.Birds.AddBird
 
             };
 
-            await _birdRepository.AddBird(birdToCreate, request.UserId);
+            await _birdRepository.AddBird(birdToCreate);
 
             return birdToCreate;
         }

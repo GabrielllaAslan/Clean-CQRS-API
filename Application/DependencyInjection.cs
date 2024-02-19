@@ -1,10 +1,12 @@
 ﻿using Application.Queries.Users.Login.Helpers;
 using FluentValidation;
+using Infrastructure.Repositories;
 using Infrastructure.Repositories.Birds;
 using Infrastructure.Repositories.Cats;
 using Infrastructure.Repository.BirdRepository;
 using Infrastructure.Repository.CatRepository;
 using Infrastructure.Repository.DogRepository;
+using Infrastructure.Repository.UserRepository;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
@@ -25,6 +27,8 @@ namespace Application
             services.AddScoped<IDogRepository, DogRepository>();
             
             services.AddScoped<ICatRepository, CatRepository>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }
