@@ -5,7 +5,6 @@ using Application.Dtos;
 using Application.Queries.Cats.GetAll;
 using Application.Queries.Cats.GetById;
 using Application.Queries.Cats.GetWeight;
-using Application.Validators;
 using Application.Validators.Cat;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

@@ -1,29 +1,34 @@
 ﻿using Domain.Models;
 using Infrastructure.Database;
+using Infrastructure.Repository.UserRepository;
 using MediatR;
+using System;
 
 namespace Application.Commands.Users.AddUser
 {
     internal sealed class AddNewUserCommandHandler : IRequestHandler<AddNewUserCommand, User>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly IUserRepository _userRepository;
 
-        public AddNewUserCommandHandler(MockDatabase mockDatabase)
+        public AddNewUserCommandHandler(IUserRepository userRepository)
         {
-            _mockDatabase = mockDatabase;
+            _userRepository = userRepository;
         }
 
-        public Task<User> Handle(AddNewUserCommand request, CancellationToken cancellationToken)
+        public async Task<User> Handle(AddNewUserCommand request, CancellationToken cancellationToken)
         {
-            User userToCreate = new()
+            User userToCreate = new User
             {
                 Id = Guid.NewGuid(),
                 UserName = request.NewUser.UserName,
                 Password = request.NewUser.Password,
             };
 
-            _mockDatabase.Users.Add(userToCreate);
-            return Task.FromResult(userToCreate);
+            // Anropa metod i UserRepository för att lägga till användaren i databasen
+            await _userRepository.AddUserAsync(userToCreate);
+
+            return userToCreate;
         }
     }
 }
+

@@ -39,5 +39,25 @@ namespace Infrastructure.Repositories
                 return false;
             }
         }
+        public async Task AddUserAsync(User user)
+        {
+            try
+            {
+                // Assuming User has a corresponding DbSet in your DbContext
+                await _realDatabase.Users.AddAsync(user);
+                await _realDatabase.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                throw;
+            }
+        }
+
+        public Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
+   

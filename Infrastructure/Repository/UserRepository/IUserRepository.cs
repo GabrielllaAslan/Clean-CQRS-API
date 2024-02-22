@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Infrastructure.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,9 @@ namespace Infrastructure.Repository.UserRepository
     public interface IUserRepository
 
     {
+        Task SaveChangesAsync();
+        Task AddUserAsync(User user);
         Task<bool> AddUserAnimalAsync(UserAnimal userAnimal);
+
     }
 }

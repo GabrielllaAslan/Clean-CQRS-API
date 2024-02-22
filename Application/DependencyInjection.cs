@@ -1,13 +1,15 @@
 ﻿using Application.Queries.Users.Login.Helpers;
-using FluentValidation;
-using Infrastructure.Repositories;
+using Application.Validators;
 using Infrastructure.Repositories.Birds;
 using Infrastructure.Repositories.Cats;
+using Infrastructure.Repositories;
 using Infrastructure.Repository.BirdRepository;
 using Infrastructure.Repository.CatRepository;
 using Infrastructure.Repository.DogRepository;
 using Infrastructure.Repository.UserRepository;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using API.Controllers;
 
 namespace Application
 {
@@ -23,12 +25,12 @@ namespace Application
             services.AddValidatorsFromAssembly(assembly);
 
             services.AddScoped<IBirdRepository, BirdRepository>();
-
             services.AddScoped<IDogRepository, DogRepository>();
-            
             services.AddScoped<ICatRepository, CatRepository>();
-
             services.AddScoped<IUserRepository, UserRepository>();
+
+            // Lägg till GuidValidator
+            services.AddScoped<GuidValidator>();
 
             return services;
         }

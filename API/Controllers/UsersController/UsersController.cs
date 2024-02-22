@@ -1,5 +1,6 @@
 ﻿using Application.Commands.AnimalToUser;
 using Application.Commands.Users;
+using Application.Commands.Users.AddUser;
 using Application.Dtos;
 using Application.Queries.Users.GetAllUsers;
 using Application.Queries.Users.Login;
@@ -53,6 +54,14 @@ namespace API.Controllers.UsersController
         public async Task<IActionResult> Login([FromBody] UserDto userWantingToLogIn)
         {
             return Ok(await _mediator.Send(new LoginUserQuery(userWantingToLogIn)));
+
+        }
+
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody] UserDto newUser)
+        {
+            return Ok(await _mediator.Send(new AddNewUserCommand(newUser)));
 
         }
 

@@ -1,6 +1,8 @@
 ﻿using Domain.Models;
+using Infrastructure.Database;
 using Infrastructure.Repository.UserRepository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands.AnimalToUser
 {
@@ -29,6 +31,25 @@ namespace Application.Commands.AnimalToUser
             }
             catch (Exception ex)
             {
+                return false;
+            }
+        }
+
+        public async Task<bool> AddUserAnimalAsync(UserAnimal userAnimal)
+        {
+            try
+            {
+                // Assuming UserAnimal has a corresponding DbSet in your DbContext
+                _userRepository.UserAnimals.Add(userAnimal);
+
+                // Save changes to the database
+                await _userRepository.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
                 return false;
             }
         }

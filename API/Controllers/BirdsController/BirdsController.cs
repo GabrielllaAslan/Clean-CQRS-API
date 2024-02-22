@@ -164,7 +164,6 @@ using Application.Dtos;
 using Application.Queries.Birds.GetAll;
 using Application.Queries.Birds.GetById;
 using Application.Queries.Birds.GetColor;
-using Application.Validators;
 using Application.Validators.Bird;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

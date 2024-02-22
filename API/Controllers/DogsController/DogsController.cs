@@ -5,7 +5,6 @@ using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
 using Application.Queries.Dogs.GetById;
 using Application.Queries.Dogs.GetWeightAndBreed;
-using Application.Validators;
 using Application.Validators.Dog;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
