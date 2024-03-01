@@ -25,7 +25,7 @@ namespace Infrastructure.Database
  
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=LAPTOP-O7CREI7D; Database=claen-api-database; Trusted_Connection=True; TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("Server=LAPTOP-O7CREI7D; Database=claen-api; Trusted_Connection=True; TrustServerCertificate=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,9 +41,13 @@ namespace Infrastructure.Database
 
             modelBuilder.Entity<UserAnimal>()
                 .HasOne(ua => ua.Animal)
-                .WithMany(a => a.UserAnimals)
+                .WithMany()
                 .HasForeignKey(ua => ua.AnimalId);
+
             base.OnModelCreating(modelBuilder);
+
+            SeedDB.SeedAnimals(modelBuilder);
         }
+
     }
 }

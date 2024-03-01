@@ -1,21 +1,24 @@
 ﻿using Domain.Models;
-using Infrastructure.Database;
+using Infrastructure.Repository.CatRepository; 
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Queries.Cats.GetById
 {
-    public class GetCatByIdQueryHandler : IRequestHandler<GetCatByIdQuery, Cat>
+    public class GetCatByIdQueryHandler : IRequestHandler<GetCatByIdQuery, Cat> 
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly ICatRepository _catRepository; 
 
-        public GetCatByIdQueryHandler(MockDatabase mockDatabase)
+        public GetCatByIdQueryHandler(ICatRepository catRepository) 
         {
-            _mockDatabase = mockDatabase;
+            _catRepository = catRepository;
         }
 
         public Task<Cat> Handle(GetCatByIdQuery request, CancellationToken cancellationToken)
         {
-            Cat wantedCat = _mockDatabase.Cats.Where(cat => cat.Id == request.Id).FirstOrDefault()!;
+            Cat wantedCat = Task.Run(() => _catRepository.GetCatById(request.Id, cancellationToken)).Result;
+
             return Task.FromResult(wantedCat);
         }
     }

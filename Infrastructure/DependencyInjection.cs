@@ -8,10 +8,10 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            services.AddSingleton<MockDatabase>();
+            //services.AddSingleton<MockDatabase>();
             services.AddDbContext<RealDatabase>(option =>
             {
-                option.UseSqlServer("Server=LAPTOP-O7CREI7D; Database=claen-api-database; Trusted_Connection=True; TrustServerCertificate=True");
+                option.UseSqlServer("Server=LAPTOP-O7CREI7D; Database=claen-api; Trusted_Connection=True; TrustServerCertificate=True");
             });
 
             return services;

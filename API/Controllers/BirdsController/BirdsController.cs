@@ -228,7 +228,7 @@ namespace API.Controllers.BirdsController
         [Route("getAllBirdsWithColor/{birdColor}")]
         public async Task<IActionResult> GetBirdByColor(string birdColor)
         {
-            return Ok(await _mediator.Send(new GetAllBirdsWithColorQuery { Color = birdColor }));
+            return Ok(await _mediator.Send(new GetAllBirdsByColorQuery { Color = birdColor }));
         }
        
         // [Authorize] // Uncomment if authentication is required

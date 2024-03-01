@@ -1,14 +1,18 @@
 ﻿using Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories.Cats
+namespace Infrastructure.Repository.CatRepository 
 {
-    public interface ICatRepository
+    public interface ICatRepository 
     {
-        Task<List<Cat>> GetAllCatsAsync();
-        Task<Cat> GetCatById(Guid id);
-        Task<Cat> AddCat(Cat newCat, Guid userId);
-        Task<Cat> UpdateCat(Cat updatedCat);
-        Task<Cat> DeleteCatById(Guid id);
-        Task<List<Cat>> GetCatsByWeightBreed(int? weight, string? breed);
+        Task<List<Cat>> GetAllCatsAsync(CancellationToken cancellationToken); 
+        Task<Cat> GetCatById(Guid id, CancellationToken cancellationToken); 
+        Task<Cat> AddCat(Cat newCat, CancellationToken cancellationToken); 
+        Task<List<Cat>> GetCatsByWeightBreed(int? weight, string? breed, CancellationToken cancellationToken);
+        Task<Cat> DeleteCat(Guid? id, CancellationToken cancellationToken);
+        Task<Cat> UpdateCat(Guid id, string name, bool likesToPlay, string breed, int weight, CancellationToken cancellationToken);
     }
 }

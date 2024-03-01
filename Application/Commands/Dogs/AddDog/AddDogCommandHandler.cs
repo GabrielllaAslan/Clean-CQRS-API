@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Commands.Dogs
 {
-    public class AddDogCommandHandler : IRequestHandler<AddDogCommand, Dog>
+    public sealed class AddDogCommandHandler : IRequestHandler<AddDogCommand, Dog>
     {
         private readonly IDogRepository _dogRepository;
 
@@ -12,22 +12,21 @@ namespace Application.Commands.Dogs
         {
             _dogRepository = dogRepository;
         }
-        public async Task<Dog> Handle(AddDogCommand request, CancellationToken cancellationToken)
-        {
 
+        public Task<Dog> Handle(AddDogCommand request, CancellationToken cancellationToken)
+        {
             Dog dogToCreate = new()
             {
+                Id = Guid.NewGuid(),
                 Name = request.NewDog.Name,
                 Breed = request.NewDog.Breed,
-                Weight = request.NewDog.Weight
+                Weight = request.NewDog.Weight,
+               
             };
 
+            _dogRepository.AddDog(dogToCreate, cancellationToken);
 
-            await _dogRepository.AddDog(dogToCreate, request.Id);
-
-
-            return dogToCreate;
+            return Task.FromResult(dogToCreate);
         }
-
     }
 }

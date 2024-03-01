@@ -1,24 +1,28 @@
 ﻿using Domain.Models;
-using Infrastructure.Database;
+using Infrastructure.Repository.DogRepository;
 using MediatR;
 
 namespace Application.Commands.Dogs.UpdateDog
 {
-    internal class UpdateDogByIdCommandHandler : IRequestHandler<UpdateDogByIdCommand, Dog>
+    public class UpdateDogByIdCommandHandler : IRequestHandler<UpdateDogByIdCommand, Dog>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly IDogRepository _dogRepository;
 
-        public UpdateDogByIdCommandHandler(MockDatabase mockDatabase)
+        public UpdateDogByIdCommandHandler(IDogRepository dogRepository)
         {
-            _mockDatabase = mockDatabase;
+            _dogRepository = dogRepository;
         }
-        public Task<Dog> Handle(UpdateDogByIdCommand request, CancellationToken cancellationToken)
+
+        public async Task<Dog> Handle(UpdateDogByIdCommand request, CancellationToken cancellationToken)
         {
-            Dog dogToUpdate = _mockDatabase.Dogs.FirstOrDefault(dog => dog.Id == request.Id)!;
+            var Id = request.Id;
+            var Name = request.UpdatedDog.Name;
+            var Breed = request.UpdatedDog.Breed;
+            int Weight = request.UpdatedDog.Weight;
 
-            dogToUpdate.Name = request.UpdatedDog.Name;
+            Dog dogToUpdate = await _dogRepository.UpdateDog(Id, Name, Breed, Weight, cancellationToken);
 
-            return Task.FromResult(dogToUpdate);
+            return dogToUpdate;
         }
     }
 }

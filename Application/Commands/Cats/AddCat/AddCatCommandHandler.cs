@@ -1,8 +1,9 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Cats;
+﻿using Application.Commands.Cats.AddCat;
+using Domain.Models;
+using Infrastructure.Repository.CatRepository;
 using MediatR;
 
-namespace Application.Commands.Cats.AddCat
+namespace Application.Commands.Cats
 {
     public class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
     {
@@ -13,21 +14,20 @@ namespace Application.Commands.Cats.AddCat
             _catRepository = catRepository;
         }
 
-        public async Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
+        public Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
         {
-
             Cat catToCreate = new()
             {
+                Id = Guid.NewGuid(),
                 Name = request.NewCat.Name,
+                LikesToPlay = request.NewCat.LikesToPlay,
                 Breed = request.NewCat.Breed,
-                Weight = request.NewCat.Weight
+                Weight = request.NewCat.Weight,
             };
 
-            await _catRepository.AddCat(catToCreate, request.UserId);
+            _catRepository.AddCat(catToCreate, cancellationToken);
 
-
-            return catToCreate;
+            return Task.FromResult(catToCreate);
         }
     }
 }
-

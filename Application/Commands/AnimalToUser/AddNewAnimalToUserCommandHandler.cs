@@ -35,23 +35,6 @@ namespace Application.Commands.AnimalToUser
             }
         }
 
-        public async Task<bool> AddUserAnimalAsync(UserAnimal userAnimal)
-        {
-            try
-            {
-                // Assuming UserAnimal has a corresponding DbSet in your DbContext
-                _userRepository.UserAnimals.Add(userAnimal);
-
-                // Save changes to the database
-                await _userRepository.SaveChangesAsync();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it appropriately
-                return false;
-            }
-        }
+       
     }
 }

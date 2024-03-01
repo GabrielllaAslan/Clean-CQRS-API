@@ -1,23 +1,24 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Cats;
+﻿using Application.Queries.Cats.GetWeight;
+using Domain.Models;
+using Infrastructure.Repository.CatRepository; 
 using MediatR;
 
-namespace Application.Queries.Cats.GetWeight
+namespace Application.Queries.Cats.GetWeightAndBreed 
 {
-    public class GetCatsByWeightQueryOrBreedHandler : IRequestHandler<GetCatsByWeightOrBreedQuery, List<Cat>>
+    public class GetCatsByWeightOrBreedQueryHandler : IRequestHandler<GetCatsByWeightOrBreedQuery, List<Cat>> 
     {
-        private readonly ICatRepository _catRepository;
+        private readonly ICatRepository _catRepository; 
 
-        public GetCatsByWeightQueryOrBreedHandler(ICatRepository catRepository)
+        public GetCatsByWeightOrBreedQueryHandler(ICatRepository catRepository)
         {
-            _catRepository = catRepository;
+            _catRepository = catRepository; 
         }
 
         public async Task<List<Cat>> Handle(GetCatsByWeightOrBreedQuery request, CancellationToken cancellationToken)
         {
-            List<Cat> allCatsWithWeight = await _catRepository.GetCatsByWeightBreed(request.Weight, request.Breed);
+            List<Cat> cats = await _catRepository.GetCatsByWeightBreed(request.Weight, request.Breed, cancellationToken); 
 
-            return allCatsWithWeight;
+            return cats;
         }
     }
 }

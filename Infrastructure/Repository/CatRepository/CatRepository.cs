@@ -1,6 +1,5 @@
 ﻿using Domain.Models;
 using Infrastructure.Database;
-using Infrastructure.Repositories.Cats;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository.CatRepository

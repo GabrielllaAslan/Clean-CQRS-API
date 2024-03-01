@@ -1,18 +1,24 @@
 ﻿using Application.Dtos;
 using Domain.Models;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.Commands.Cats.UpdateCat
 {
     public class UpdateCatByIdCommand : IRequest<Cat>
     {
-        public UpdateCatByIdCommand(CatDto catToUpdate, Guid id)
+        public UpdateCatByIdCommand(Guid id, CatDto updatedCat)
         {
-            CatToUpdate = catToUpdate;
             Id = id;
+            UpdatedCat = updatedCat;
         }
 
-        public CatDto CatToUpdate { get; }
+        public CatDto UpdatedCat { get; }
         public Guid Id { get; }
+
     }
 }

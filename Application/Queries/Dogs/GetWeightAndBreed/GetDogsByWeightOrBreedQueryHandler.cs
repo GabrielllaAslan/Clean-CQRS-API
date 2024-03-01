@@ -15,9 +15,9 @@ namespace Application.Queries.Dogs.GetWeightAndBreed
 
         public async Task<List<Dog>> Handle(GetDogsByWeightOrBreedQuery request, CancellationToken cancellationToken)
         {
-            List<Dog> allDogsWithWeightBreed = await _dogRepository.GetDogsByWeightBreed(request.Weight, request.Breed);
+            List<Dog> dogs = await _dogRepository.GetDogsByWeightBreed(request.Weight, request.Breed, cancellationToken);
 
-            return allDogsWithWeightBreed;
+            return dogs;
         }
     }
 }

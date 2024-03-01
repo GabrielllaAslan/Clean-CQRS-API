@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Queries.Birds.GetColor
 {
-    public class GetAllBirdsWithColorQuery : IRequest<List<Bird>>
+    public class GetAllBirdsByColorQuery : IRequest<List<Bird>>
     {
         public string Color { get; set; }
     }

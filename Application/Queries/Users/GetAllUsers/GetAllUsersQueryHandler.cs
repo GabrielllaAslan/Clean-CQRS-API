@@ -1,22 +1,24 @@
 ﻿using Domain.Models;
-using Infrastructure.Database;
+using Domain.Models.Animal;
+using Infrastructure.Repository.UserRepository;
 using MediatR;
 
-namespace Application.Queries.Users.GetAllUsers
+namespace Application.Queries.Users.GetAll
 {
-    public sealed class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<User>>
+    public sealed class GetAllUserssQueryHandler : IRequestHandler<GetAllUsersQuery, List<AnimalModel>>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly IUserRepository _userRepository;
 
-        public GetAllUsersQueryHandler(MockDatabase mockDatabase)
+        public GetAllUserssQueryHandler(IUserRepository userRepository)
         {
-            _mockDatabase = mockDatabase;
+            _userRepository = userRepository;
         }
 
-        public Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+        public Task<List<AnimalModel>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            List<User> allUsersFromMockDatabase = _mockDatabase.Users;
-            return Task.FromResult(allUsersFromMockDatabase);
+            List<AnimalModel> allAnimals = Task.Run(() => _userRepository.GetAllAnimals(request.UserName, cancellationToken)).Result;
+
+            return Task.FromResult(allAnimals);
         }
     }
 }
