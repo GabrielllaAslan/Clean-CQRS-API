@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 namespace Infrastructure.Repository.CatRepository
 {
@@ -14,93 +15,55 @@ namespace Infrastructure.Repository.CatRepository
             _realDatabase = realDatabase;
         }
 
-        public async Task<Cat> AddCat(Cat newCat)
+        public Task<Cat> AddCat(Cat newCat, CancellationToken cancellationToken)
         {
-            try
-            {
-                _realDatabase.Cats.Add(newCat);
-                _realDatabase.SaveChanges();
-                return await Task.FromResult(newCat);
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
+            _realDatabase.Cats.Add(newCat);
+            _realDatabase.SaveChangesAsync(cancellationToken);
+
+            return Task.FromResult(newCat);
         }
 
-        public Task<Cat> AddCat(Cat newCat, Guid userId)
+        public Task<Cat> DeleteCat(Guid? id, CancellationToken cancellationToken)
+        {
+            var catToDelete = _realDatabase.Cats.FirstOrDefault(b => b.Id == id);
+
+            _realDatabase.Remove(catToDelete!);
+            _realDatabase.SaveChangesAsync(cancellationToken);
+
+            return Task.FromResult(catToDelete!);
+        }
+
+        public Task<List<Cat>> GetAllCatsAsync(CancellationToken cancellationToken)
+        {
+            List<Cat> allCats = _realDatabase.Cats.ToList();
+
+            return Task.FromResult(allCats);
+        }
+
+        public Task<Cat> GetCatById(Guid id, CancellationToken cancellationToken)
+        {
+            Cat wantedCat = _realDatabase.Cats.FirstOrDefault(b => b.Id == id);
+
+            return Task.FromResult(wantedCat!);
+        }
+
+        public Task<List<Cat>> GetCatsByWeightBreed(int? weight, string? breed, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Cat> DeleteCatById(Guid id)
+        public Task<Cat> UpdateCat(Guid id, string name, bool likesToPlay, string breed, int weight, CancellationToken cancellationToken)
         {
-            try
-            {
-                Cat catToDelete = await GetCatById(id);
+            Cat CatUpdate = _realDatabase.Cats.FirstOrDefault(b => b.Id == id);
 
-                _realDatabase.Cats.Remove(catToDelete);
+            CatUpdate.Name = name;
+            CatUpdate.Weight = weight;
+            CatUpdate.Breed = breed;
+            CatUpdate.LikesToPlay = likesToPlay;
 
-                _realDatabase.SaveChanges();
+            _realDatabase.SaveChangesAsync(cancellationToken);
 
-                return await Task.FromResult(catToDelete);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while deleting a cat with Id {id} from the database", ex);
-            }
-        }
-
-        public async Task<List<Cat>> GetAllCatsAsync()
-        {
-            try
-            {
-                return await _realDatabase.Cats.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while getting all cats from the database", ex);
-            }
-        }
-
-        public async Task<Cat> GetCatById(Guid catId)
-        {
-            try
-            {
-                Cat? wantedCat = await _realDatabase.Cats.FirstOrDefaultAsync(cat => cat.Id == catId);
-
-                if (wantedCat == null)
-                {
-                    throw new Exception($"There was no cat with Id {catId} in the database");
-                }
-
-                return await Task.FromResult(wantedCat);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while getting a cat by Id {catId} from the database", ex);
-            }
-        }
-
-        public Task<List<Cat>> GetCatsByWeightBreed(int? weight, string? breed)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Cat> UpdateCat(Cat updatedCat)
-        {
-            try
-            {
-                _realDatabase.Cats.Update(updatedCat);
-
-                _realDatabase.SaveChanges();
-
-                return await Task.FromResult(updatedCat);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while updating a cat by Id {updatedCat.Id} from the database", ex);
-            }
+            return Task.FromResult(CatUpdate);
         }
     }
 }

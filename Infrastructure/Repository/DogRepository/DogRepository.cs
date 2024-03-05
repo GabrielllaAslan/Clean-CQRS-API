@@ -14,94 +14,57 @@ namespace Infrastructure.Repository.DogRepository
             _realDatabase = realDatabase;
         }
 
-        public async Task<Dog> AddDog(Dog newDog)
+        public Task<Dog> AddDog(Dog newDog, CancellationToken cancellationToken)
         {
-            try
-            {
-                _realDatabase.Dogs.Add(newDog);
-                _realDatabase.SaveChanges();
-                return await Task.FromResult(newDog);
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
+            _realDatabase.Dogs.Add(newDog);
+            _realDatabase.SaveChangesAsync(cancellationToken);
+
+            return Task.FromResult(newDog);
         }
 
-        public Task<Dog> AddDog(Dog newDog, Guid id)
+        public Task<Dog> DeleteDog(Guid id, CancellationToken cancellationToken)
+        {
+            var dogToDelete = _realDatabase.Dogs.FirstOrDefault(b => b.Id == id);
+
+            _realDatabase.Remove(dogToDelete!);
+            _realDatabase.SaveChangesAsync(cancellationToken);
+
+            return Task.FromResult(dogToDelete!);
+        }
+
+        public Task<List<Dog>> GetAllDogsAsync(CancellationToken cancellationToken)
+        {
+            List<Dog> allDogs = _realDatabase.Dogs.ToList();
+
+            return Task.FromResult(allDogs);
+        }
+
+        public Task<Dog> GetDogById(Guid id, CancellationToken cancellationToken)
+        {
+            Dog wantedDog = _realDatabase.Dogs.FirstOrDefault(b => b.Id == id);
+
+            return Task.FromResult(wantedDog!);
+        }
+
+        public Task<List<Dog>> GetDogsByWeightBreed(int? weight, string? breed, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Dog> DeleteDogById(Guid id)
+        public Task<Dog> UpdateDog(Guid id, string name, string breed, int weight, CancellationToken cancellationToken)
         {
-            try
-            {
-                Dog dogToDelete = await GetDogById(id);
+            Dog DogUpdate = _realDatabase.Dogs.FirstOrDefault(b => b.Id == id);
 
-                _realDatabase.Dogs.Remove(dogToDelete);
+            DogUpdate.Name = name;
+            DogUpdate.Weight = weight;
+            DogUpdate.Breed = breed;
+          
 
-                _realDatabase.SaveChanges();
+            _realDatabase.SaveChangesAsync(cancellationToken);
 
-                return await Task.FromResult(dogToDelete);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occured while deleting a dog with Id {id} from the database", ex);
-            }
-        }
-
-        public async Task<List<Dog>> GetAllDogsAsync()
-        {
-            try
-            {
-                return await _realDatabase.Dogs.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occured while getting all dogs from the database", ex);
-            }
-        }
-
-        public async Task<Dog> GetDogById(Guid dogId)
-        {
-            try
-            {
-                Dog? wantedDog = await _realDatabase.Dogs.FirstOrDefaultAsync(dog => dog.Id == dogId);
-
-                if (wantedDog == null)
-                {
-                    throw new Exception($"There was no dog with Id {dogId} in the database");
-                }
-
-                return await Task.FromResult(wantedDog);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occured while getting a dog by Id {dogId} from database", ex);
-            }
-        }
-
-        public Task<List<Dog>> GetDogsByWeightBreed(int? weight, string? breed)
-
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Dog> UpdateDog(Dog updatedDog)
-        {
-            try
-            {
-                _realDatabase.Dogs.Update(updatedDog);
-
-                _realDatabase.SaveChanges();
-
-                return await Task.FromResult(updatedDog);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occured while updating a dog by Id {updatedDog.Id} from database", ex);
-            }
+            return Task.FromResult(DogUpdate);
         }
     }
 }
+
+       

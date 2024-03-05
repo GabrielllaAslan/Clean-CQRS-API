@@ -54,6 +54,11 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public Task<List<User>> GetAllUsers(string userName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task SaveChangesAsync()
         {
             throw new NotImplementedException();

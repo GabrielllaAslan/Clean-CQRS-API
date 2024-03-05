@@ -14,93 +14,58 @@ namespace Infrastructure.Repository.BirdRepository
             _realDatabase = realDatabase;
         }
 
-        public async Task<Bird> AddBird(Bird newBird)
+        public Task<Bird> AddBird(Bird newbird, CancellationToken cancellationToken)
         {
-            try
-            {
-                _realDatabase.Birds.Add(newBird);
-                _realDatabase.SaveChanges();
-                return await Task.FromResult(newBird);
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
+            _realDatabase.Birds.Add(newbird);
+            _realDatabase.SaveChangesAsync(cancellationToken);
+
+            return Task.FromResult(newbird);
+
         }
 
-        public Task<Bird> AddBird(Bird newBird, Guid id)
+        public Task<Bird> DeleteBird(Guid? id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var birdToDelete = _realDatabase.Birds.FirstOrDefault(b => b.Id == id);
+
+            _realDatabase.Remove(birdToDelete!);
+            _realDatabase.SaveChangesAsync(cancellationToken);
+
+            return Task.FromResult(birdToDelete!);
+
         }
 
-        public async Task<Bird> DeleteBirdById(Guid id)
+        public Task<List<Bird>> GetAllBirdsAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                Bird birdToDelete = await GetBirdById(id);
+            List<Bird> allBirds = _realDatabase.Birds.ToList();
 
-                _realDatabase.Birds.Remove(birdToDelete);
-
-                _realDatabase.SaveChanges();
-
-                return await Task.FromResult(birdToDelete);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while deleting a bird with Id {id} from the database", ex);
-            }
+            return Task.FromResult(allBirds);
         }
 
-        public async Task<List<Bird>> GetAllBirdsAsync()
+        public Task<List<Bird>> GetAllBirdsByColor(string color, CancellationToken cancellationToken)
         {
-            try
-            {
-                return await _realDatabase.Birds.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while getting all birds from the database", ex);
-            }
+            List<Bird> filterBirdByColor = _realDatabase.Birds.Where(b =>  b.Color == color).ToList();
+
+            return Task.FromResult(filterBirdByColor);
         }
 
-        public Task<List<Bird>> GetAllBirdsWithColor(string color)
+        public Task<Bird> GetBirdById(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            Bird wantedBird = _realDatabase.Birds.FirstOrDefault(b => b.Id == id);
+
+            return Task.FromResult(wantedBird!);
         }
 
-        public async Task<Bird> GetBirdById(Guid birdId)
+        public Task<Bird> UpdateBird(Guid id, string newName, string color, bool CanFly, CancellationToken cancellationToken)
         {
-            try
-            {
-                Bird? wantedBird = await _realDatabase.Birds.FirstOrDefaultAsync(bird => bird.Id == birdId);
+            Bird BirdUpdate = _realDatabase.Birds.FirstOrDefault(b => b.Id == id);
 
-                if (wantedBird == null)
-                {
-                    throw new Exception($"There was no bird with Id {birdId} in the database");
-                }
+            BirdUpdate.Name = newName;
+            BirdUpdate.Color = color;
+            BirdUpdate.CanFly = CanFly;
 
-                return await Task.FromResult(wantedBird);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while getting a bird by Id {birdId} from the database", ex);
-            }
-        }
+            _realDatabase.SaveChangesAsync(cancellationToken);
 
-        public async Task<Bird> UpdateBird(Bird updatedBird)
-        {
-            try
-            {
-                _realDatabase.Birds.Update(updatedBird);
-
-                _realDatabase.SaveChanges();
-
-                return await Task.FromResult(updatedBird);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while updating a bird by Id {updatedBird.Id} from the database", ex);
-            }
+            return Task.FromResult(BirdUpdate);
         }
     }
 }
