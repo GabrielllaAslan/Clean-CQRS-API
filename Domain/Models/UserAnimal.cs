@@ -8,7 +8,7 @@ namespace Domain.Models
         public User User { get; set; }
 
         public Guid AnimalId { get; set; }
-        public AnimalModel Animal { get; set; }
+       
 
     }
 }

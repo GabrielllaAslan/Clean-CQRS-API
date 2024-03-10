@@ -1,31 +1,30 @@
 ﻿using Application.Queries.Users.Login.Helpers;
 using Infrastructure.Database;
+using Infrastructure.Repository.UserRepository;
 using MediatR;
 
 namespace Application.Queries.Users.Login
 {
     public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, string>
     {
-        private readonly MockDatabase _mockDatabase;
-        private readonly TokenHelper _tokenHelper;
+        private readonly IUserRepository _userRepository;
 
 
-        public LoginUserQueryHandler(MockDatabase mockDatabase, TokenHelper tokenHelper)
+        public LoginUserQueryHandler(IUserRepository userRepository)
         {
-            _mockDatabase = mockDatabase;
-            _tokenHelper = tokenHelper;
+            _userRepository = userRepository;
         }
 
         public Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
         {
-            var user = _mockDatabase.Users.FirstOrDefault(user => user.UserName == request.LoginUser.UserName && user.Password == request.LoginUser.Password);
+            var user = _userRepository.GetAllUsers(request.LoginUser.UserName, request.LoginUser.Password, cancellationToken);
 
             if (user == null)
             {
                 throw new UnauthorizedAccessException("Invalid username or password");
             }
 
-            string token = _tokenHelper.GenerateJwtToken(user);
+            string token = _userRepository.GenerateJwtToken(user);
             return Task.FromResult(token);
         }
     }

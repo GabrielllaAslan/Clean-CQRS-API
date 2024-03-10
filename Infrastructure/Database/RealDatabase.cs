@@ -6,12 +6,11 @@ namespace Infrastructure.Database
 {
     public class RealDatabase : DbContext
     {
-        public DbSet<AnimalModel> AnimalModels { get; set; }
-        public DbSet<Bird> Birds { get; set; }
+        public virtual DbSet<Bird> Birds { get; set; }
         public virtual DbSet<Dog> Dogs { get; set; }
-        public DbSet<Cat> Cats { get; set; }
+        public virtual DbSet<Cat> Cats { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public DbSet<UserAnimal> UserAnimals { get; set; }
+        public virtual DbSet<UserAnimal> UserAnimals { get; set; }
        
         public RealDatabase()
         {
@@ -34,15 +33,7 @@ namespace Infrastructure.Database
             modelBuilder.Entity<UserAnimal>()
                 .HasKey(ua => new { ua.UserId, ua.AnimalId });
 
-            modelBuilder.Entity<UserAnimal>()
-                .HasOne(ua => ua.User)
-                .WithMany(u => u.UserAnimals)
-                .HasForeignKey(ua => ua.UserId);
-
-            modelBuilder.Entity<UserAnimal>()
-                .HasOne(ua => ua.Animal)
-                .WithMany()
-                .HasForeignKey(ua => ua.AnimalId);
+           
 
             base.OnModelCreating(modelBuilder);
 

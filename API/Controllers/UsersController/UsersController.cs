@@ -2,7 +2,6 @@
 using Application.Commands.Users;
 using Application.Commands.Users.AddUser;
 using Application.Dtos;
-using Application.Queries.Users.GetAllUsers;
 using Application.Queries.Users.Login;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +16,6 @@ namespace API.Controllers.UsersController
         public UsersController(IMediator mediator)
         {
             _mediator = mediator;
-        }
-
-        [HttpGet]
-        [Route("getAllUsers")]
-        public async Task<IActionResult> GetAllUsersQuery()
-        {
-            return Ok(await _mediator.Send(new GetAllUsersQuery()));
-
         }
 
         [HttpPost("addNewAnimal")]

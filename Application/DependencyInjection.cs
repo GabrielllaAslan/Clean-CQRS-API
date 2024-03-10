@@ -1,7 +1,6 @@
 ﻿using Application.Queries.Users.Login.Helpers;
 using Application.Validators;
 using Infrastructure.Repositories.Birds;
-using Infrastructure.Repositories.Cats;
 using Infrastructure.Repositories;
 using Infrastructure.Repository.BirdRepository;
 using Infrastructure.Repository.CatRepository;

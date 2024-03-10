@@ -17,11 +17,14 @@ namespace Application.Commands.Users.AddUser
 
         public async Task<User> Handle(AddNewUserCommand request, CancellationToken cancellationToken)
         {
+            // Password hashing using BCrypt
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewUser.Password);
+
             User userToCreate = new User
             {
                 Id = Guid.NewGuid(),
                 UserName = request.NewUser.UserName,
-                Password = request.NewUser.Password,
+                Password = hashedPassword,
             };
 
             // Anropa metod i UserRepository för att lägga till användaren i databasen

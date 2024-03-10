@@ -274,7 +274,7 @@ namespace API.Controllers.BirdsController
                 return BadRequest(birdValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
-            var bird = await _mediator.Send(new UpdateBirdByIdCommand(birdToUpdate, updateBirdId));
+            var bird = await _mediator.Send(new UpdateBirdByIdCommand(updateBirdId, birdToUpdate));
 
             if (bird == null)
             {

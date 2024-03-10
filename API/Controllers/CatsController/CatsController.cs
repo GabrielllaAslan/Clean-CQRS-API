@@ -97,7 +97,7 @@ namespace API.Controllers.CatsController
                 return BadRequest(catValidate.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
-            var cat = await _mediator.Send(new UpdateCatByIdCommand(catToUpdate, updateCatId));
+            var cat = await _mediator.Send(new UpdateCatByIdCommand(updateCatId, catToUpdate));
 
             if (cat == null)
             {
